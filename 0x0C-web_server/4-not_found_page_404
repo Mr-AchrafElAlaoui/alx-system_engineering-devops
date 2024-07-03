@@ -1,26 +1,22 @@
 #!/usr/bin/env bash
-# Bash script that configures an Nginx server to have custom 404 page with a custom text
-sudo apt-get -y update
-sudo apt-get -y install nginx
-echo "Hello World!" > /var/www/html/uche.html
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html > /dev/null
-sudo bash -c 'cat <<EOL > /etc/nginx/sites-enabled/default
-server {
-    listen 80;
-    listen [::]:80 default_server;
+#Configure your Nginx server to have a custom 404 page that contains the string Ceci n'est pas une page.
 
-    root /var/www/html;
-    index uche.html index.html index.htm index.nginx-debian.html;
+STRING="Hello World!"
 
-    location /redirect_me {
-        return 301 https://www.github.com/elasri21;
-    }
+REDIRECT="\n\tlocation /redirect_me {\n\t\treturn 301 https://youtu.be/dQw4w9WgXcQ;\n\t}\n"
+FILE="/etc/nginx/sites-available/default"
 
-    error_page 404 /404.html;
-    location = /404.html {
-        root /var/www/html/;
-        internal;
-    }
-}
-EOL'
-sudo service nginx restart
+ERRORFILE="/usr/share/nginx/html/404error.html"
+FOUR="Ceci n'est pas une page"
+ERRORREDIRECT="\n\terror_page 404 /404error.html;\n\tlocation = /404error.html {\n\t\troot /usr/share/nginx/html;\n\t\tinternal;\n\t}\n"
+
+apt-get -y update
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+sudo echo "$STRING" > /var/www/html/index.nginx-debian.html
+sed -i "37i\ $REDIRECT" "$FILE"
+
+echo "$FOUR" > "$ERRORFILE"
+sed -i "37i\ $ERRORREDIRECT" "$FILE"
+
+service nginx restart
