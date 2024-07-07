@@ -1,7 +1,6 @@
 Attack is the best defense
 ==========================
 
--   By Sylvain Kalache
 -   Weight: 1
 
 Concepts
